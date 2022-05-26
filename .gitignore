@@ -22,3 +22,6 @@ gradle-app.setting
 .settings
 
 .env
+
+# Documentation build
+/docs/book/book

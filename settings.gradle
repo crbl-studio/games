@@ -1,1 +1,3 @@
 rootProject.name = 'games-crbl-studio'
+
+include 'docs'

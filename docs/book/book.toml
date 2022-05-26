@@ -1,0 +1,24 @@
+[book]
+authors = ["Bogdan Crisan"]
+language = "en"
+multilingual = false
+src = "src"
+title = "CRBl_ Studio Games - Project Description and Documentation"
+description = "This book covers the ins and outs of the CRBl_ Studio Games project, describing how it should be and how it works"
+
+[preprocessor]
+
+[preprocessor.mermaid]
+command = "mdbook-mermaid"
+
+[preprocessor.admonish]
+command = "mdbook-admonish"
+assets_version = "1.0.0" # do not edit: managed by `mdbook-admonish install`
+
+[output]
+
+[output.html]
+default-theme="rust"
+prefered-dark-theme="coal"
+additional-js = ["other/mermaid.min.js", "other/mermaid-init.js"]
+additional-css = ["other/mdbook-admonish.css"]
