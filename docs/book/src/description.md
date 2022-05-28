@@ -44,7 +44,7 @@ flowchart TD
     lobby --> configure
     start --> game
     game --> theend
-    theend --> home
+    theend --> lobby
 ```
 
 ### Joining the website
