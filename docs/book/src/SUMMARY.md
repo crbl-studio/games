@@ -8,19 +8,15 @@
 
 - [General architecture](./architecture.md)
 
-- [Authentication service]()
-    - [Description]()
-    - [API]()
+- [Authentication service](./auth/index.md)
+    - [API](./auth/api.md)
 
 - [API service]()
-    - [Description]()
     - [API]()
 
 - [Game server]()
-    - [Description]()
     - [API]()
     - [Mini-games API]()
 
 - [Mini-game servers]()
-    - [Description]()
     - [Example]()

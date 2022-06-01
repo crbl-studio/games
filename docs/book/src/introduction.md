@@ -20,10 +20,10 @@ help developers understand how the project works under the hood.
 ## Layout
 
 In part two, every component of the project is split under multiple
-subchapters. Each component should have a description subchapter, describing
-what it is, what it is used for, etc. Components containing an API should have
-an API subchapter, describing all of its endpoints, the expected data, and the
-return data.
+subchapters. Each component should have a main chapter which includes its
+description, describing what it is, what it is used for, etc. Components
+containing an API should have an API subchapter, describing all of its
+endpoints, the expected data, and the return data.
 
 ```admonish warning "**WIP**"
 Work in progress parts are marked like this. This paragraph should include a
