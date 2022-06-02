@@ -18,25 +18,25 @@ Topics can include :
 
 | Topic name | Description             |
 |------------|-------------------------|
-| `auth`     | Authentication service. |
 | `api`      | API service.            |
-| `gs`       | (Mini-)Game server.     |
-| `ci`       | CI/CD related changes.  |
+| `auth`     | Authentication service. |
 | `book`     | Book update.            |
-| `ui`       | User interface.         |
+| `gs`       | (Mini-)Game server.     |
 | `misc`     | Miscellaneous topic.    |
+| `ui`       | User interface.         |
 
 Types can include :
 
-| Type name | Description            |
-|-----------|------------------------|
-| `feat`    | Added a feature.        |
-| `docs`    | Added documentation.    |
-| `refactor`| Added documentation.    |
-| `fix`     | Fixed a bug.            |
-| `build`   | Update to build files.  |
-| `test`    | Added or updated tests. |
-| `misc`    | Miscellaneous changes.  |
+| Type name  | Description             |
+|------------|-------------------------|
+| `build`    | Update to build files.  |
+| `ci`       | CI/CD related changes.  |
+| `docs`     | Added documentation.    |
+| `feat`     | Added a feature.        |
+| `fix`      | Fixed a bug.            |
+| `misc`     | Miscellaneous changes.  |
+| `refactor` | Added documentation.    |
+| `test`     | Added or updated tests. |
 
 Topics and types may evolve as new modules are added.
 
