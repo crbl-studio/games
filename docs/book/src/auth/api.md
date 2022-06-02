@@ -44,7 +44,9 @@ A JWT should contain the following information :
 
 ## `POST` to `/user`
 
-Creates a new user.
+Creates a new user. Will first stock the user as a *temporary* user, until
+email verification is complete. If the email is not verified within 5 days, the
+account will be deleted.
 
 ### Input
 
@@ -52,42 +54,28 @@ Creates a new user.
 
 ```typescript
 interface Body {
-    name: string; /* The user's display name, must be unique. */
-    email: string; /* The user's email, must be unique. */
+    name: string;     /* The user's display name, must be unique. */
+    email: string;    /* The user's email, must be unique. */
     password: string; /* The user's password. */
-    mature: boolean; /* Whether to display mature content to the user or not */
 }
 ```
 
 ### Output
-
-#### Data
-
-```typescript
-interface Output {
-    jwt: string;
-    refreshToken: string;
-}
-```
 
 #### Error codes
 
 - `1` : name is already used.
 - `2` : email is already used.
 - `3` : password is considered insecure.
+- `4` : name contains invalid characters.
 
 #### HTTP codes
 
 - `400` : if the input is malformed (missing fields, unknown fields, etc.).
 
----
-
 ## `PUT` to `/user/name`
 
 Edits a user's name.
-
-No email change happens here. Email change is accomplished by [another
-route](please put link here).
 
 ### Input
 
@@ -95,7 +83,7 @@ route](please put link here).
 
 ```typescript
 interface Body {
-    name: string;
+    name: string; /* The user's new requested name. */
 }
 ```
 
@@ -105,34 +93,29 @@ interface Body {
 
 ### Output
 
-#### Data
-
-```typescript
-interface Output {
-    name: string;
-}
-```
-
 #### Error codes
 
 - `1` : name is already used.
+- `2` : name contains invalid characters.
 
 #### HTTP codes
 
 - `400` : if the input is malformed (missing fields, unknown fields, etc.).
 - `401` : if no authorization token was provided or if the authorization token is invalid.
 
----
-
 ## `PUT` to `/user/email`
 
 Edits a user's email.
 
-No name change happens here. Name change is accomplished by [another
-route](please put link here).
-
 This should not instantly change the user's email, but wait for the user to
-verify his new email before changing it.
+verify his new email before changing it. Should send an email to the old email,
+to confirm the authenticity of the request, and then send an email to the new
+email, to confirm the ownership of the new email address.
+
+The links sent to the email addresses should both be valid for a period of 5
+days, and then expire.
+
+The email change should only happen once both links are clicked.
 
 ### Input
 
@@ -140,7 +123,7 @@ verify his new email before changing it.
 
 ```typescript
 interface Body {
-    email: string;
+    email: string; /* The new requested email. */
 }
 ```
 
@@ -149,14 +132,6 @@ interface Body {
 - `Authorization: Bearer <token>`
 
 ### Output
-
-#### Data
-
-```typescript
-interface Output {
-    email: string;
-}
-```
 
 #### Error codes
 
@@ -166,8 +141,6 @@ interface Output {
 
 - `400` : if the input is malformed (missing fields, unknown fields, etc.).
 - `401` : if no authorization token was provided or if the authorization token is invalid.
-
----
 
 ## `POST` to `/user/login`
 
@@ -191,8 +164,12 @@ interface Body {
 
 ```typescript
 interface Output {
-    jwt: string;
-    refreshToken: string;
+    jwt: string;          /* A token used to identify the user to other
+                           * services. Short lived (10 minutes).
+                           */
+    refreshToken: string; /* A token used to get a new JWT without needing
+                           * to reauthenticate. Long lived (TBD).
+                           */
 }
 ```
 
@@ -202,7 +179,30 @@ interface Output {
 - `2` : both email and name are provided.
 - `3` : no user found with this combination.
 
----
+## `POST` to `/user/refresh`
+
+Refreshes a user's token.
+
+### Input
+
+#### Headers
+
+- `X-Refresh-Token: <token>`
+
+### Output
+
+#### Data
+
+```typescript
+interface Output {
+    jwt: string;          /* The newly generated JWT. */
+    refreshToken: string; /* A new refreshed refresh token. */
+}
+```
+
+#### HTTP codes
+
+- `401` if no refresh token was provided or if the refresh token is invalid.
 
 ## `POST` to `/user/logout`
 
@@ -221,8 +221,6 @@ Should invalidate the tokens.
 
 None.
 
----
-
 ## `DELETE` to `/user`
 
 Deletes a user.
@@ -235,9 +233,9 @@ Deletes a user.
 
 ### Output
 
-None.
+#### HTTP codes
 
----
+- `401` if no authorization token was provided or if the authorization token is invalid.
 
 ## `POST` to `/mini-game`
 
@@ -249,7 +247,13 @@ Creates a new mini-game project for the logged-in user.
 
 ```typescript
 interface Body {
-    name: string;
+    name: string; /* The name of the project. This name will be used
+                   * to display the project in the user's project list
+                   * but is not the public display name of the project.
+                   * This is unique to the user's level (i.e. the user
+                   * cannot have two projects with the same name, but
+                   * two projects with the same name can exist).
+                   */
 }
 ```
 
@@ -263,9 +267,11 @@ interface Body {
 
 ```typescript
 interface Output {
-    name: string;
-    apiKey: string; /* Only delivered once as it is stored as a hash in the database, watch out ! */
-    id: string; /* Unique mini-game identifier. */
+    id: string;     /* Unique mini-game identifier. */
+    name: string;   /* The name of the project. */
+    apiKey: string; /* Only delivered once as it is stored as a hash in the
+                     * database, watch out ! Can be regenerated through a
+                     * request. */
 }
 ```
 
@@ -278,8 +284,6 @@ interface Output {
 
 - `400` : if the input is malformed (missing fields, unknown fields, etc.).
 - `401` : if no authorization token was provided or if the authorization token is invalid.
-
----
 
 ## `DELETE` to `/mini-game/{id}`
 
@@ -297,8 +301,6 @@ Deletes the specified mini-game.
 
 - `401` : if no authorization token was provided or if the authorization token is invalid.
 - `404` : if no such mini-game was found or if the mini-game does not belong to the user.
-
----
 
 ## `POST` to `/mini-game/login`
 
@@ -325,7 +327,30 @@ interface Output {
 
 - `401` : if no authorization token was provided or if the authorization token is invalid.
 
----
+## `POST` to `/mini-game/refresh`
+
+Issue a new token for the mini-game.
+
+### Input
+
+#### Headers
+
+- `X-Refresh-Token: <token>`
+
+### Output
+
+#### Data
+
+```typescript
+interface Output {
+    jwt: string;
+    refreshToken: string;
+}
+```
+
+#### HTTP codes
+
+- `401` if no refresh token was provided or if the refresh token is invalid.
 
 ## `POST` to `/mini-game/logout`
 
@@ -341,8 +366,6 @@ Generates an authentication token for a mini-game.
 ### Output
 
 None.
-
----
 
 ## `POST` to `/decode`
 
@@ -387,9 +410,9 @@ interface Body {
 
 ```typescript
 interface Output {
-    type: 'User' | 'MiniGameServer';
-    exp: number; /* The date the JWT expires on. */
-    id: string; /* Unique identifier to the entity. */
+    type: 'User' | 'MiniGameServer'; /* The type of the entity identified by the JWT. */
+    exp: number;                     /* The date the JWT expires on. */
+    id: string;                      /* Unique identifier to the entity. */
 }
 ```
 
@@ -402,5 +425,4 @@ interface Output {
 
 - `400` : if the input is malformed (missing fields, unknown fields, etc.).
 - `401` : if no authorization token was provided or if the authorization token is invalid.
-
----
+- `403` : if the issuer of the request in not authorized to access this endpoint.
