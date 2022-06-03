@@ -3,7 +3,7 @@ on: [push]
 
 jobs:
   build:
-    name: Build and deplot
+    name: Build and deploy
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,6 +31,7 @@ jobs:
         if: ${{ github.ref_name == 'main' }}
         shell: bash
         run: |
+          cd docs/book
           git worktree add gh-pages gh-pages
           git config user.name "Deploy from CI"
           git config user.email ""
