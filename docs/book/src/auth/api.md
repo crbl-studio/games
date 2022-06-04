@@ -142,6 +142,26 @@ interface Body {
 - `400` : if the input is malformed (missing fields, unknown fields, etc.).
 - `401` : if no authorization token was provided or if the authorization token is invalid.
 
+## `POST` to `/user/email`
+
+Route to confirm the user's email
+
+### Input
+
+#### Data
+
+```typescript
+interface Body {
+    token: string; /* Signed email confirmation token. */
+}
+```
+
+### Output
+
+#### HTTP codes
+
+- `400` : if the input is malformed (missing fields, unknown fields, etc.).
+
 ## `POST` to `/user/login`
 
 Logs in a user with his name or email, and password.
