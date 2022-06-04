@@ -9,6 +9,7 @@
 - [General architecture](./architecture.md)
 
 - [Authentication service](./auth/index.md)
+    - [Database](./auth/database.md)
     - [API](./auth/api.md)
 
 - [API service]()
