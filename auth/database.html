@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Database - CRBl_ Studio Games - Project Description and Documentation</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="This book covers the ins and outs of the CRBl_ Studio Games project, describing how it should be and how it works">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../other/mdbook-admonish.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="../description.html"><strong aria-hidden="true">1.</strong> Description</a></li><li class="chapter-item expanded affix "><li class="part-title">Project components</li><li class="chapter-item expanded "><a href="../architecture.html"><strong aria-hidden="true">2.</strong> General architecture</a></li><li class="chapter-item expanded "><a href="../auth/index.html"><strong aria-hidden="true">3.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../auth/database.html" class="active"><strong aria-hidden="true">3.1.</strong> Database</a></li><li class="chapter-item expanded "><a href="../auth/api.html"><strong aria-hidden="true">3.2.</strong> API</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> API service</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">4.1.</strong> API</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Game server</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">5.1.</strong> API</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.2.</strong> Mini-games API</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> Mini-game servers</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">6.1.</strong> Example</div></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">CRBl_ Studio Games - Project Description and Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="database-layout"><a class="header" href="#database-layout">Database layout</a></h1>
+<p>Here is a preview of the database layout for the database.</p>
+<h2 id="users"><a class="header" href="#users"><code>users</code></a></h2>
+<p>A table where the users are stored.</p>
+<table><thead><tr><th>Name</th><th>Type</th><th>Unique</th><th>Not null</th><th>Description</th><th>Relation</th></tr></thead><tbody>
+<tr><td><code>id</code></td><td><code>number</code></td><td>yes</td><td>yes</td><td>The ID of the user.</td><td></td></tr>
+<tr><td><code>name</code></td><td><code>string</code></td><td>yes</td><td>yes</td><td>The unique name of the user.</td><td></td></tr>
+<tr><td><code>email</code></td><td><code>string</code></td><td>yes</td><td>yes</td><td>The unique email of the user.</td><td></td></tr>
+<tr><td><code>password_hash</code></td><td><code>string</code></td><td>no</td><td>yes</td><td>The hash of the user's password.</td><td></td></tr>
+</tbody></table>
+<h2 id="user_blacklist"><a class="header" href="#user_blacklist"><code>user_blacklist</code></a></h2>
+<p>A table where the blacklisted tokens are stored.</p>
+<p>Entries must be removed after the expiration date has been reached.</p>
+<table><thead><tr><th>Name</th><th>Type</th><th>Unique</th><th>Not null</th><th>Description</th><th>Relation</th></tr></thead><tbody>
+<tr><td><code>token</code></td><td><code>string</code></td><td>yes</td><td>yes</td><td>The token to blacklist.</td><td></td></tr>
+<tr><td><code>type</code></td><td><code>number</code></td><td>no</td><td>yes</td><td>The type of token (0 for<code>refresh</code> and 1 for <code>jwt</code>).</td><td></td></tr>
+<tr><td><code>expiration</code></td><td><code>date</code></td><td>no</td><td>yes</td><td>The date when the token expires.</td><td></td></tr>
+</tbody></table>
+<h2 id="projects"><a class="header" href="#projects"><code>projects</code></a></h2>
+<p>A table storing projects (mini-games).</p>
+<table><thead><tr><th>Name</th><th>Type</th><th>Unique</th><th>Not null</th><th>Description</th><th>Relation</th></tr></thead><tbody>
+<tr><td><code>id</code></td><td><code>number</code></td><td>yes</td><td>yes</td><td>The ID of the project.</td><td></td></tr>
+<tr><td><code>name</code></td><td><code>string</code></td><td>no</td><td>yes</td><td>The name of the project.</td><td></td></tr>
+<tr><td><code>api_key</code></td><td><code>string</code></td><td>yes</td><td>yes</td><td>A key to authenticate the project.</td><td></td></tr>
+<tr><td><code>user_id</code></td><td><code>number</code></td><td>no</td><td>yes</td><td>The ID of the user owning the project.</td><td><code>users</code> on <code>id</code></td></tr>
+</tbody></table>
+<h2 id="temp_users"><a class="header" href="#temp_users"><code>temp_users</code></a></h2>
+<p>A table where the just created accounts are stored until their email is
+verified. On email verification, users must get transferred from this table to
+the <code>users</code> table.</p>
+<div id="admonition-note" class="admonition note">
+<div class="admonition-title">
+<a class="admonition-anchor-link" href="#admonition-note">
+<p>Note</p>
+</a>
+</div>
+<div>
+<p>When an email is updated, there is no temporary account created. When an email
+is changed, the user gets an email with a token that contains an encoded
+message that is signed by this server. To update the email, the user clicks on
+a link which sends a request to this server and updates the email directly in
+the <code>users</code> table.</p>
+</div>
+</div>
+<table><thead><tr><th>Name</th><th>Type</th><th>Unique</th><th>Not null</th><th>Description</th><th>Relation</th></tr></thead><tbody>
+<tr><td><code>id</code></td><td><code>number</code></td><td>yes</td><td>yes</td><td>The ID of the user.</td><td></td></tr>
+<tr><td><code>name</code></td><td><code>string</code></td><td>yes</td><td>yes</td><td>The unique name of the user.</td><td></td></tr>
+<tr><td><code>email</code></td><td><code>string</code></td><td>yes</td><td>yes</td><td>The unique email of the user.</td><td></td></tr>
+<tr><td><code>password_hash</code></td><td><code>string</code></td><td>no</td><td>yes</td><td>The hash of the user's password.</td><td></td></tr>
+</tbody></table>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../auth/index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                            <a rel="next" href="../auth/api.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../auth/index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+                    <a rel="next" href="../auth/api.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../other/mermaid.min.js"></script>
+        <script type="text/javascript" src="../other/mermaid-init.js"></script>
+    </body>
+</html>

@@ -1,0 +1,529 @@
+<!DOCTYPE HTML>
+<html lang="en" class="sidebar-visible no-js rust">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>API - CRBl_ Studio Games - Project Description and Documentation</title>
+        <!-- Custom HTML head -->
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta name="description" content="This book covers the ins and outs of the CRBl_ Studio Games project, describing how it should be and how it works">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff" />
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+        <link rel="stylesheet" href="../other/mdbook-admonish.css">
+    </head>
+    <body>
+        <!-- Provide site root to javascript -->
+        <script type="text/javascript">
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "rust";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script type="text/javascript">
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script type="text/javascript">
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('no-js')
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add('js');
+        </script>
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script type="text/javascript">
+            var html = document.querySelector('html');
+            var sidebar = 'hidden';
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            }
+            html.classList.remove('sidebar-visible');
+            html.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="spacer"></li><li class="chapter-item expanded "><a href="../description.html"><strong aria-hidden="true">1.</strong> Description</a></li><li class="chapter-item expanded affix "><li class="part-title">Project components</li><li class="chapter-item expanded "><a href="../architecture.html"><strong aria-hidden="true">2.</strong> General architecture</a></li><li class="chapter-item expanded "><a href="../auth/index.html"><strong aria-hidden="true">3.</strong> Authentication service</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../auth/database.html"><strong aria-hidden="true">3.1.</strong> Database</a></li><li class="chapter-item expanded "><a href="../auth/api.html" class="active"><strong aria-hidden="true">3.2.</strong> API</a></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">4.</strong> API service</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">4.1.</strong> API</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.</strong> Game server</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">5.1.</strong> API</div></li><li class="chapter-item expanded "><div><strong aria-hidden="true">5.2.</strong> Mini-games API</div></li></ol></li><li class="chapter-item expanded "><div><strong aria-hidden="true">6.</strong> Mini-game servers</div></li><li><ol class="section"><li class="chapter-item expanded "><div><strong aria-hidden="true">6.1.</strong> Example</div></li></ol></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky bordered">
+                    <div class="left-buttons">
+                        <button id="sidebar-toggle" class="icon-button" type="button" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </button>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust (default)</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">CRBl_ Studio Games - Project Description and Documentation</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script type="text/javascript">
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<p>Foremost, each response is structured as follows :</p>
+<pre><code class="language-typescript">interface Dto&lt;T&gt; {
+    data: T | null;
+    error?: Error | null;
+}
+
+interface Error {
+    code: number;
+    message: string;
+}
+</code></pre>
+<p>Either <code>data</code> or <code>error</code> must be null, and the other one must contain
+something. In the rest of this page, we will only declare the interface that
+represents <code>T</code>, and list error codes that can be returned by each route.</p>
+<p>Errors are only returned if the data is well sent by the client. If data is
+malformed, fields are missing, authorization is required, etc., then the HTTP
+response code should be between 400 and 499 and the return body should be
+empty.</p>
+<p>Error codes are route dependent. This means that error code <code>1</code> on <code>POST</code> to
+<code>/user</code> does not mean the same thing as error code <code>1</code> on <code>GET</code> to
+<code>/server/login</code>.</p>
+<p>For input data, the <code>Body</code> interface is considered to be a JSON body, and
+the <code>Url</code> interface are the parameters passed in the URL. They should match
+the braces in the title of the route. For example, if a route is <code>/user/{id}</code>,
+then the <code>Url</code> object should contain one item, named <code>id</code>.</p>
+<p>Error code <code>0</code> always means unknown error.</p>
+<p>A JWT should contain the following information :</p>
+<ul>
+<li>an expiration date</li>
+<li>a unique identifier to the authenticated entity</li>
+<li>an entity type (<code>'User' | 'MiniGameServer'</code>)</li>
+</ul>
+<h1 id="routes"><a class="header" href="#routes">Routes</a></h1>
+<h2 id="post-to-user"><a class="header" href="#post-to-user"><code>POST</code> to <code>/user</code></a></h2>
+<p>Creates a new user. Will first stock the user as a <em>temporary</em> user, until
+email verification is complete. If the email is not verified within 5 days, the
+account will be deleted.</p>
+<h3 id="input"><a class="header" href="#input">Input</a></h3>
+<h4 id="data"><a class="header" href="#data">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    name: string;     /* The user's display name, must be unique. */
+    email: string;    /* The user's email, must be unique. */
+    password: string; /* The user's password. */
+}
+</code></pre>
+<h3 id="output"><a class="header" href="#output">Output</a></h3>
+<h4 id="error-codes"><a class="header" href="#error-codes">Error codes</a></h4>
+<ul>
+<li><code>1</code> : name is already used.</li>
+<li><code>2</code> : email is already used.</li>
+<li><code>3</code> : password is considered insecure.</li>
+<li><code>4</code> : name contains invalid characters.</li>
+</ul>
+<h4 id="http-codes"><a class="header" href="#http-codes">HTTP codes</a></h4>
+<ul>
+<li><code>400</code> : if the input is malformed (missing fields, unknown fields, etc.).</li>
+</ul>
+<h2 id="put-to-username"><a class="header" href="#put-to-username"><code>PUT</code> to <code>/user/name</code></a></h2>
+<p>Edits a user's name.</p>
+<h3 id="input-1"><a class="header" href="#input-1">Input</a></h3>
+<h4 id="data-1"><a class="header" href="#data-1">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    name: string; /* The user's new requested name. */
+}
+</code></pre>
+<h4 id="headers"><a class="header" href="#headers">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-1"><a class="header" href="#output-1">Output</a></h3>
+<h4 id="error-codes-1"><a class="header" href="#error-codes-1">Error codes</a></h4>
+<ul>
+<li><code>1</code> : name is already used.</li>
+<li><code>2</code> : name contains invalid characters.</li>
+</ul>
+<h4 id="http-codes-1"><a class="header" href="#http-codes-1">HTTP codes</a></h4>
+<ul>
+<li><code>400</code> : if the input is malformed (missing fields, unknown fields, etc.).</li>
+<li><code>401</code> : if no authorization token was provided or if the authorization token is invalid.</li>
+</ul>
+<h2 id="put-to-useremail"><a class="header" href="#put-to-useremail"><code>PUT</code> to <code>/user/email</code></a></h2>
+<p>Edits a user's email.</p>
+<p>This should not instantly change the user's email, but wait for the user to
+verify his new email before changing it. Should send an email to the old email,
+to confirm the authenticity of the request, and then send an email to the new
+email, to confirm the ownership of the new email address.</p>
+<p>The links sent to the email addresses should both be valid for a period of 5
+days, and then expire.</p>
+<p>The email change should only happen once both links are clicked.</p>
+<h3 id="input-2"><a class="header" href="#input-2">Input</a></h3>
+<h4 id="data-2"><a class="header" href="#data-2">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    email: string; /* The new requested email. */
+}
+</code></pre>
+<h4 id="headers-1"><a class="header" href="#headers-1">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-2"><a class="header" href="#output-2">Output</a></h3>
+<h4 id="error-codes-2"><a class="header" href="#error-codes-2">Error codes</a></h4>
+<ul>
+<li><code>1</code> : email is already used.</li>
+</ul>
+<h4 id="http-codes-2"><a class="header" href="#http-codes-2">HTTP codes</a></h4>
+<ul>
+<li><code>400</code> : if the input is malformed (missing fields, unknown fields, etc.).</li>
+<li><code>401</code> : if no authorization token was provided or if the authorization token is invalid.</li>
+</ul>
+<h2 id="post-to-useremail"><a class="header" href="#post-to-useremail"><code>POST</code> to <code>/user/email</code></a></h2>
+<p>Route to confirm the user's email</p>
+<h3 id="input-3"><a class="header" href="#input-3">Input</a></h3>
+<h4 id="data-3"><a class="header" href="#data-3">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    token: string; /* Signed email confirmation token. */
+}
+</code></pre>
+<h3 id="output-3"><a class="header" href="#output-3">Output</a></h3>
+<h4 id="http-codes-3"><a class="header" href="#http-codes-3">HTTP codes</a></h4>
+<ul>
+<li><code>400</code> : if the input is malformed (missing fields, unknown fields, etc.).</li>
+</ul>
+<h2 id="post-to-userlogin"><a class="header" href="#post-to-userlogin"><code>POST</code> to <code>/user/login</code></a></h2>
+<p>Logs in a user with his name or email, and password.</p>
+<h3 id="input-4"><a class="header" href="#input-4">Input</a></h3>
+<h4 id="data-4"><a class="header" href="#data-4">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    email: string | null;
+    name: string | null;
+    password: string;
+}
+</code></pre>
+<h3 id="output-4"><a class="header" href="#output-4">Output</a></h3>
+<h4 id="data-5"><a class="header" href="#data-5">Data</a></h4>
+<pre><code class="language-typescript">interface Output {
+    jwt: string;          /* A token used to identify the user to other
+                           * services. Short lived (10 minutes).
+                           */
+    refreshToken: string; /* A token used to get a new JWT without needing
+                           * to reauthenticate. Long lived (TBD).
+                           */
+}
+</code></pre>
+<h4 id="error-codes-3"><a class="header" href="#error-codes-3">Error codes</a></h4>
+<ul>
+<li><code>1</code> : both email and name are null.</li>
+<li><code>2</code> : both email and name are provided.</li>
+<li><code>3</code> : no user found with this combination.</li>
+</ul>
+<h2 id="post-to-userrefresh"><a class="header" href="#post-to-userrefresh"><code>POST</code> to <code>/user/refresh</code></a></h2>
+<p>Refreshes a user's token.</p>
+<h3 id="input-5"><a class="header" href="#input-5">Input</a></h3>
+<h4 id="headers-2"><a class="header" href="#headers-2">Headers</a></h4>
+<ul>
+<li><code>X-Refresh-Token: &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-5"><a class="header" href="#output-5">Output</a></h3>
+<h4 id="data-6"><a class="header" href="#data-6">Data</a></h4>
+<pre><code class="language-typescript">interface Output {
+    jwt: string;          /* The newly generated JWT. */
+    refreshToken: string; /* A new refreshed refresh token. */
+}
+</code></pre>
+<h4 id="http-codes-4"><a class="header" href="#http-codes-4">HTTP codes</a></h4>
+<ul>
+<li><code>401</code> if no refresh token was provided or if the refresh token is invalid.</li>
+</ul>
+<h2 id="post-to-userlogout"><a class="header" href="#post-to-userlogout"><code>POST</code> to <code>/user/logout</code></a></h2>
+<p>Logs out a user.</p>
+<p>Should invalidate the tokens.</p>
+<h3 id="input-6"><a class="header" href="#input-6">Input</a></h3>
+<h4 id="headers-3"><a class="header" href="#headers-3">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+<li><code>X-Refresh-Token: &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-6"><a class="header" href="#output-6">Output</a></h3>
+<p>None.</p>
+<h2 id="delete-to-user"><a class="header" href="#delete-to-user"><code>DELETE</code> to <code>/user</code></a></h2>
+<p>Deletes a user.</p>
+<h3 id="input-7"><a class="header" href="#input-7">Input</a></h3>
+<h4 id="headers-4"><a class="header" href="#headers-4">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-7"><a class="header" href="#output-7">Output</a></h3>
+<h4 id="http-codes-5"><a class="header" href="#http-codes-5">HTTP codes</a></h4>
+<ul>
+<li><code>401</code> if no authorization token was provided or if the authorization token is invalid.</li>
+</ul>
+<h2 id="post-to-mini-game"><a class="header" href="#post-to-mini-game"><code>POST</code> to <code>/mini-game</code></a></h2>
+<p>Creates a new mini-game project for the logged-in user.</p>
+<h3 id="input-8"><a class="header" href="#input-8">Input</a></h3>
+<h4 id="data-7"><a class="header" href="#data-7">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    name: string; /* The name of the project. This name will be used
+                   * to display the project in the user's project list
+                   * but is not the public display name of the project.
+                   * This is unique to the user's level (i.e. the user
+                   * cannot have two projects with the same name, but
+                   * two projects with the same name can exist).
+                   */
+}
+</code></pre>
+<h4 id="headers-5"><a class="header" href="#headers-5">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-8"><a class="header" href="#output-8">Output</a></h3>
+<h4 id="data-8"><a class="header" href="#data-8">Data</a></h4>
+<pre><code class="language-typescript">interface Output {
+    id: string;     /* Unique mini-game identifier. */
+    name: string;   /* The name of the project. */
+    apiKey: string; /* Only delivered once as it is stored as a hash in the
+                     * database, watch out ! Can be regenerated through a
+                     * request. */
+}
+</code></pre>
+<h4 id="error-codes-4"><a class="header" href="#error-codes-4">Error codes</a></h4>
+<ul>
+<li><code>1</code> : the name is already used.</li>
+<li><code>2</code> : the user has reached the maximum number of mini-games allowed per user.</li>
+</ul>
+<h4 id="http-codes-6"><a class="header" href="#http-codes-6">HTTP codes</a></h4>
+<ul>
+<li><code>400</code> : if the input is malformed (missing fields, unknown fields, etc.).</li>
+<li><code>401</code> : if no authorization token was provided or if the authorization token is invalid.</li>
+</ul>
+<h2 id="delete-to-mini-gameid"><a class="header" href="#delete-to-mini-gameid"><code>DELETE</code> to <code>/mini-game/{id}</code></a></h2>
+<p>Deletes the specified mini-game.</p>
+<h3 id="input-9"><a class="header" href="#input-9">Input</a></h3>
+<h4 id="headers-6"><a class="header" href="#headers-6">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-9"><a class="header" href="#output-9">Output</a></h3>
+<h4 id="http-codes-7"><a class="header" href="#http-codes-7">HTTP codes</a></h4>
+<ul>
+<li><code>401</code> : if no authorization token was provided or if the authorization token is invalid.</li>
+<li><code>404</code> : if no such mini-game was found or if the mini-game does not belong to the user.</li>
+</ul>
+<h2 id="post-to-mini-gamelogin"><a class="header" href="#post-to-mini-gamelogin"><code>POST</code> to <code>/mini-game/login</code></a></h2>
+<p>Generates an authentication token for a mini-game.</p>
+<h3 id="input-10"><a class="header" href="#input-10">Input</a></h3>
+<h4 id="headers-7"><a class="header" href="#headers-7">Headers</a></h4>
+<ul>
+<li><code>X-Api-Key: &lt;api-key&gt;</code></li>
+</ul>
+<h3 id="output-10"><a class="header" href="#output-10">Output</a></h3>
+<h4 id="data-9"><a class="header" href="#data-9">Data</a></h4>
+<pre><code class="language-typescript">interface Output {
+    jwt: string;
+    refreshToken: string;
+}
+</code></pre>
+<h4 id="http-codes-8"><a class="header" href="#http-codes-8">HTTP codes</a></h4>
+<ul>
+<li><code>401</code> : if no authorization token was provided or if the authorization token is invalid.</li>
+</ul>
+<h2 id="post-to-mini-gamerefresh"><a class="header" href="#post-to-mini-gamerefresh"><code>POST</code> to <code>/mini-game/refresh</code></a></h2>
+<p>Issue a new token for the mini-game.</p>
+<h3 id="input-11"><a class="header" href="#input-11">Input</a></h3>
+<h4 id="headers-8"><a class="header" href="#headers-8">Headers</a></h4>
+<ul>
+<li><code>X-Refresh-Token: &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-11"><a class="header" href="#output-11">Output</a></h3>
+<h4 id="data-10"><a class="header" href="#data-10">Data</a></h4>
+<pre><code class="language-typescript">interface Output {
+    jwt: string;
+    refreshToken: string;
+}
+</code></pre>
+<h4 id="http-codes-9"><a class="header" href="#http-codes-9">HTTP codes</a></h4>
+<ul>
+<li><code>401</code> if no refresh token was provided or if the refresh token is invalid.</li>
+</ul>
+<h2 id="post-to-mini-gamelogout"><a class="header" href="#post-to-mini-gamelogout"><code>POST</code> to <code>/mini-game/logout</code></a></h2>
+<p>Generates an authentication token for a mini-game.</p>
+<h3 id="input-12"><a class="header" href="#input-12">Input</a></h3>
+<h4 id="headers-9"><a class="header" href="#headers-9">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+<li><code>X-Refresh-Token: &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-12"><a class="header" href="#output-12">Output</a></h3>
+<p>None.</p>
+<h2 id="post-to-decode"><a class="header" href="#post-to-decode"><code>POST</code> to <code>/decode</code></a></h2>
+<p>Decodes information encoded into a JWT and verifies its authenticity.</p>
+<div id="admonition-authorization" class="admonition warning">
+<div class="admonition-title">
+<a class="admonition-anchor-link" href="#admonition-authorization">
+<p>Authorization</p>
+</a>
+</div>
+<div>
+<p>Only authorized services should be able to decode and verify a JWT.</p>
+</div>
+</div>
+<div id="admonition-note" class="admonition note">
+<div class="admonition-title">
+<a class="admonition-anchor-link" href="#admonition-note">
+<p>Note</p>
+</a>
+</div>
+<div>
+<p>This information can be cached, in order to not verify the JWT on each request.
+For example, when the API server wants to know if the JWT is valid, it will
+make a request to the authentication server, which will respond with the
+necessary information, which is then cached by the API server. This way, the
+API server won't have to make another request to the authentication server
+whenever the entity makes another request with the same JWT.</p>
+</div>
+</div>
+<div id="admonition-note-1" class="admonition note">
+<div class="admonition-title">
+<a class="admonition-anchor-link" href="#admonition-note-1">
+<p>Note</p>
+</a>
+</div>
+<div>
+<p>Data could be decoded locally using a public key, but that implementation would
+make it difficult to invalidate tokens. This is why the service wanting to
+verify the token asks the authentication service if the token is valid or not.</p>
+</div>
+</div>
+<h3 id="input-13"><a class="header" href="#input-13">Input</a></h3>
+<h4 id="data-11"><a class="header" href="#data-11">Data</a></h4>
+<pre><code class="language-typescript">interface Body {
+    jwt: string;
+}
+</code></pre>
+<h4 id="headers-10"><a class="header" href="#headers-10">Headers</a></h4>
+<ul>
+<li><code>Authorization: Bearer &lt;token&gt;</code></li>
+</ul>
+<h3 id="output-13"><a class="header" href="#output-13">Output</a></h3>
+<h4 id="data-12"><a class="header" href="#data-12">Data</a></h4>
+<pre><code class="language-typescript">interface Output {
+    type: 'User' | 'MiniGameServer'; /* The type of the entity identified by the JWT. */
+    exp: number;                     /* The date the JWT expires on. */
+    id: string;                      /* Unique identifier to the entity. */
+}
+</code></pre>
+<h4 id="error-codes-5"><a class="header" href="#error-codes-5">Error codes</a></h4>
+<ul>
+<li><code>1</code> : the server was not able to decode the JWT.</li>
+<li><code>2</code> : the JWT is expired.</li>
+</ul>
+<h4 id="http-codes-10"><a class="header" href="#http-codes-10">HTTP codes</a></h4>
+<ul>
+<li><code>400</code> : if the input is malformed (missing fields, unknown fields, etc.).</li>
+<li><code>401</code> : if no authorization token was provided or if the authorization token is invalid.</li>
+<li><code>403</code> : if the issuer of the request in not authorized to access this endpoint.</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../auth/database.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../auth/database.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+        <script type="text/javascript">
+            window.playground_copyable = true;
+        </script>
+        <script src="../elasticlunr.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../mark.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../searcher.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../clipboard.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../highlight.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../book.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Custom JS scripts -->
+        <script type="text/javascript" src="../other/mermaid.min.js"></script>
+        <script type="text/javascript" src="../other/mermaid-init.js"></script>
+    </body>
+</html>
