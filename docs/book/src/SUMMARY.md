@@ -12,7 +12,8 @@
     - [Database](./auth/database.md)
     - [API](./auth/api.md)
 
-- [API service]()
+- [API service](./api/index.md)
+    - [Database](./api/database.md)
     - [API]()
 
 - [Game server]()
