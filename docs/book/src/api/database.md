@@ -11,11 +11,35 @@ This is an extendable table, which means that it is easy to add fields if
 needed.
 ```
 
-| Name       | Type      | Unique | Not null | Description                                   | Relation        |
-|------------|-----------|--------|----------|-----------------------------------------------|-----------------|
+| Name       | Type      | Unique | Not null | Description                                   | Relation                                     |
+|------------|-----------|--------|----------|-----------------------------------------------|----------------------------------------------|
 | `user_id`  | `number`  | yes    | yes      | The ID of the user.                           | [`users`](../auth/database.md#users) on `id` |
-| `mature`   | `boolean` | no     | yes      | Whether the user wants to see mature content. |                 |
-| `birthday` | `date`    | no     | no       | The birthday of the user.                     |                 |
+| `mature`   | `boolean` | no     | yes      | Whether the user wants to see mature content. |                                              |
+| `birthday` | `date`    | no     | no       | The birthday of the user.                     |                                              |
+
+## `user_settings`
+
+A table where the user settings are stored.
+
+```admonish info
+This is an extendable table, which means that it is easy to add fields if
+needed.
+```
+
+```admonish info "public_friend_list enum"
+`profile_visibility` and `friend_list_visibility`'s enum is composed of the
+following labels :
+
+- nobody
+- friends
+- everybody
+```
+
+| Name                     | Type                  | Unique | Not null | Description                     | Relation                                     |
+|--------------------------|-----------------------|--------|----------|---------------------------------|----------------------------------------------|
+| `user_id`                | `number`              | yes    | yes      | The ID of the user.             | [`users`](../auth/database.md#users) on `id` |
+| `profile_visibility`     | `enum` (`visibility`) | no     | yes      | Profile visibility setting.     |                                              |
+| `friend_list_visibility` | `enum` (`visibility`) | no     | yes      | Friend list visibility setting. |                                              |
 
 ## `friends`
 
