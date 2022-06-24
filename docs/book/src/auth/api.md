@@ -395,7 +395,7 @@ Decodes information encoded into a JWT and verifies its authenticity.
 Only authorized services should be able to decode and verify a JWT.
 ```
 
-```admonish note
+```admonish info
 This information can be cached, in order to not verify the JWT on each request.
 For example, when the API server wants to know if the JWT is valid, it will
 make a request to the authentication server, which will respond with the
@@ -404,7 +404,7 @@ API server won't have to make another request to the authentication server
 whenever the entity makes another request with the same JWT.
 ```
 
-```admonish note
+```admonish info
 Data could be decoded locally using a public key, but that implementation would
 make it difficult to invalidate tokens. This is why the service wanting to
 verify the token asks the authentication service if the token is valid or not.

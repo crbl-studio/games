@@ -30,12 +30,12 @@ Entries must be removed after the expiration date has been reached.
 
 A table storing projects (mini-games).
 
-| Name      | Type     | Unique | Not null | Description                            | Relation        |
-|-----------|----------|--------|----------|----------------------------------------|-----------------|
-| `id`      | `number` | yes    | yes      | The ID of the project.                 |                 |
-| `name`    | `string` | no     | yes      | The name of the project.               |                 |
-| `api_key` | `string` | yes    | yes      | A key to authenticate the project.     |                 |
-| `user_id` | `number` | no     | yes      | The ID of the user owning the project. | `users` on `id` |
+| Name      | Type     | Unique | Not null | Description                            | Relation                  |
+|-----------|----------|--------|----------|----------------------------------------|---------------------------|
+| `id`      | `number` | yes    | yes      | The ID of the project.                 |                           |
+| `name`    | `string` | no     | yes      | The name of the project.               |                           |
+| `api_key` | `string` | yes    | yes      | A key to authenticate the project.     |                           |
+| `user_id` | `number` | no     | yes      | The ID of the user owning the project. | [`users`](#users) on `id` |
 
 ## `temp_users`
 

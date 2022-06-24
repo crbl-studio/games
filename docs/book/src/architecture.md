@@ -56,6 +56,12 @@ The API service manages general user data, like friends, game history, high
 scores, added mini-games, etc. and it is also responsible for room creation. It
 relies on the authentication service to identify the user.
 
+```admonish info
+The API service and the Authentication service are actually the same server.
+They are described as two different parts of the project, but under the hood,
+they get compiled to the same binary.
+```
+
 ### Game server
 
 The game server is a real time socket server which communicates with the
