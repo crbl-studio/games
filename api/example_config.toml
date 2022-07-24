@@ -1,0 +1,16 @@
+[database]
+user = "user"
+host = "localhost"
+port = "5432"
+db = "csg"
+password = "123so-secure"
+
+[auth]
+[[jwt]]
+secret = "lol"
+duration = 360
+[[refresh_token]]
+secret = "lol"
+duration = 1209600
+[[email_confirmation]]
+secret = "lol"
