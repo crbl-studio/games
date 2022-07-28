@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Response, status, Header
+from fastapi import APIRouter, Response, status, Header, HTTPException
 from pydantic import BaseModel
 from ..database import conn
 from ..config import config
+from .util import error, check_jwt, check_refresh_token
 import bcrypt
 import jwt
 import re
@@ -24,13 +25,52 @@ class ConfirmEmailDto(BaseModel):
 
 
 class LoginDto(BaseModel):
-    email: str | None;
-    name: str | None;
-    password: str;
+    email: str | None
+    name: str | None
+    password: str
 
 
 class ChangeNameDto(BaseModel):
     name: str
+
+
+class ChangeEmailDto(BaseModel):
+    email: str
+
+
+def check_name(name):
+    return re.search("^[a-zA-Z0-9_-]*$", name) is not None
+
+
+def check_password(password: str):
+    return len(password) > 8 and re.search(
+        '[0-9]', password) is not None and re.search(
+            '[a-z]', password) is not None and re.search('[A-Z]',
+                                                         password) is not None
+
+def generate_jwt(user_id):
+    return jwt.encode(
+        {
+            "sub": user_id,
+            "type": "jwt",
+            "exp": int(time.time()) + config["auth"]["jwt"]["duration"]
+        },
+        jwt_key,
+        algorithm="HS256")
+
+def generate_refresh_token(user_id):
+    return jwt.encode(
+        {
+            "sub":
+            user_id,
+            "type":
+            "refresh_token",
+            "exp":
+            int(time.time()) + config["auth"]["refresh_token"]["duration"]
+        },
+        refresh_token_key,
+        algorithm="HS256")
+
 
 # Example route
 @router.get("/")
@@ -40,39 +80,42 @@ async def root():
 
 # https://crbl-studio.github.io/games/auth/api.html#post-to-user
 @router.post("/user")
-async def register(user: RegisterUserDto, response: Response):
+async def register(user: RegisterUserDto):
     cur = conn.cursor()
 
     # Check if the password is secure
-    if len(user.password) < 8 or re.search(
-            '[0-9]', user.password) is None or re.search(
-                '[a-z]', user.password) is None or re.search(
-                    '[A-Z]', user.password) is None:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"code": 3, "message": "password is considered insecure"}
+    if not check_password(user.password):
+        return error(3, "password is considered insecure")
 
     # Check if the username is valid
-    if re.search("^[a-zA-Z0-9_-]*$", user.name) is None:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"code": 4, "message": "name contains invalid characters"}
+    if not check_name(user.name):
+        return error(4, "name contains invalid characters")
 
     # Check if the username is already used
     cur.execute(
-        "SELECT * FROM temp_users WHERE name = %s UNION SELECT * FROM temp_users WHERE name = %s",
-        (user.name, user.name))
+        """
+        SELECT * FROM temp_users
+        WHERE name = %s
+        UNION
+        SELECT * FROM temp_users
+        WHERE name = %s
+        """, (user.name, user.name))
     existing_user = cur.fetchone()
     if existing_user:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"code": 1, "message": "name is already used"}
+        return error(1, "name is already used")
 
     # Check if the email is already used
     cur.execute(
-        "SELECT * FROM temp_users WHERE email = %s UNION SELECT * FROM temp_users WHERE email = %s",
-        (user.email, user.email))
+        """
+        SELECT * FROM temp_users
+        WHERE email = %s
+        UNION
+        SELECT * FROM temp_users
+        WHERE email = %s
+        """, (user.email, user.email))
     existing_user = cur.fetchone()
     if existing_user:
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"code": 2, "message": "email is already used"}
+        return error(2, "email is already used")
 
     # Insert the user into the temporary table
     password_bytes = user.password.encode('utf-8')
@@ -84,74 +127,136 @@ async def register(user: RegisterUserDto, response: Response):
     conn.commit()
     cur.close()
 
+
 # https://crbl-studio.github.io/games/auth/api.html#post-to-useremail
 # This is an dev version, which allows email confirmation
-# without actually sending an email
+# without actually sending an email.
 @router.post("/user/email")
 async def confirm_email(data: ConfirmEmailDto):
     cur = conn.cursor()
-    cur.execute("SELECT name, email, password_hash FROM temp_users WHERE email = %s", (data.token,))
+    cur.execute(
+        "SELECT name, email, password_hash FROM temp_users WHERE email = %s",
+        (data.token, ))
     result = cur.fetchone()
     if result is None:
-        return {"code": 1, "message": "invalid token"}
+        return error(1, "invalid token")
     name, email, password_hash = result
-    cur.execute("DELETE FROM temp_users WHERE email = %s", (email,))
-    cur.execute("INSERT INTO users (name, email, password_hash) VALUES (%s, %s, %s)", (name, email, password_hash))
+    cur.execute("DELETE FROM temp_users WHERE email = %s", (email, ))
+    cur.execute(
+        "INSERT INTO users (name, email, password_hash) VALUES (%s, %s, %s)",
+        (name, email, password_hash))
     conn.commit()
     return None
+
 
 # https://crbl-studio.github.io/games/auth/api.html#post-to-userlogin
 @router.put("/user/login")
 async def login(data: LoginDto):
     cur = conn.cursor()
     if data.email is None and data.name is None:
-        return {"code": 1, "message": "both email and name are null"}
+        return error(1, "both email and name are null")
     if data.email is not None and data.name is not None:
-        return {"code": 2, "message": "both email and name are provided"}
+        return error(2, "both email and name are provided")
     if data.email is not None:
-        cur.execute("SELECT id, password_hash FROM users WHERE email = %s", (data.email,))
+        cur.execute("SELECT id, password_hash FROM users WHERE email = %s",
+                    (data.email, ))
         result = cur.fetchone()
         if result is None:
-            return {"code": 3, "mesasge": "no user found with this combination"}
+            return error(3, "no user found with this combination")
     else:
-        cur.execute("SELECT id, password_hash FROM users WHERE name = %s", (data.name,))
+        cur.execute("SELECT id, password_hash FROM users WHERE name = %s",
+                    (data.name, ))
         result = cur.fetchone()
         if result is None:
-            return {"code": 3, "mesasge": "no user found with this combination"}
+            return error(3, "no user found with this combination")
     user_id, password_hash = result
-    if bcrypt.checkpw(data.password.encode('utf-8'), password_hash.encode('utf-8')):
-        jwt_token = jwt.encode({"sub": user_id, "exp": int(time.time()) + config["auth"]["jwt"]["duration"]}, jwt_key, algorithm="HS256")
-        refresh_token = jwt.encode({"sub": user_id, "exp": int(time.time()) + config["auth"]["refresh_token"]["duration"]}, refresh_token_key, algorithm="HS256")
-        return {"data": {"jwt": jwt_token, "refreshToken": refresh_token}}
+    if bcrypt.checkpw(data.password.encode('utf-8'),
+                      password_hash.encode('utf-8')):
+        return {"data": {"jwt": generate_jwt(user_id), "refreshToken": generate_refresh_token(user_id)}}
     else:
-        return {"code": 3, "mesasge": "no user found with this combination"}
+        return error(3, "no user found with this combination")
 
-@router.post("/user/name")
-async def change_name(data: ChangeNameDto, response: Response, authorization: str | None = Header(default=None)):
-    if authorization is None or authorization[:7] != "Bearer ":
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return
-    try:
-        decoded = jwt.decode(authorization[7:], jwt_key, algorithms=["HS256"])
-    except:
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return
 
-    if decoded["exp"] > int(time.time()):
-        response.status_code = status.HTTP_401_UNAUTHORIZED
-        return
+# https://crbl-studio.github.io/games/auth/api.html#put-to-username
+@router.put("/user/name")
+async def change_name(data: ChangeNameDto,
+                      authorization: str | None = Header(default=None)):
+    claims = check_jwt(authorization)
+    if claims is None:
+        raise HTTPException(status_code=401, detail="No jwt was provided or the jwt is invalid.")
 
-    if re.search("^[a-zA-Z0-9_-]*$", data.name) is None:
-        return {"code": 2, "message": "name contains invalid characters"}
+    if not check_name(data.name):
+        return error(2, "name contains invalid characters")
 
     cur = conn.cursor()
     cur.execute(
-        "SELECT * FROM temp_users WHERE name = %s UNION SELECT * FROM temp_users WHERE name = %s",
-        (data.name, data.name))
+        """
+        SELECT * FROM temp_users
+        WHERE name = %s
+        UNION
+        SELECT * FROM users
+        WHERE name = %s
+        """, (data.name, data.name))
     existing_user = cur.fetchone()
     if existing_user is not None:
-        return {"code": 1, "message": "name is already used"}
+        return error(1, "name is already used")
 
-    cur.execute("UPDATE users SET name = %s WHERE id = %s", (data.name, decoded["sub"]))
+    cur.execute("UPDATE users SET name = %s WHERE id = %s",
+                (data.name, claims["sub"]))
     conn.commit()
     cur.close()
+
+# https://crbl-studio.github.io/games/auth/api.html#put-to-useremail
+# This is an dev version, which allows changing email
+# without actually sending an email. In the future,
+# this should send an email to the old and new email
+# in order to confirm the change.
+@router.put("/user/email")
+async def change_email(data: ChangeEmailDto,
+                      authorization: str | None = Header(default=None)):
+    claims = check_jwt(authorization)
+    if claims["sub"] is None:
+        raise HTTPException(status_code=401, detail="No jwt was provided or the jwt is invalid.")
+
+    cur = conn.cursor()
+    cur.execute(
+        """
+        SELECT * FROM temp_users
+        WHERE email = %s
+        UNION
+        SELECT * FROM users
+        WHERE email = %s
+        """, (data.email, data.email))
+    existing_user = cur.fetchone()
+    if existing_user is not None:
+        return error(1, "email is already used")
+
+    cur.execute("UPDATE users SET email = %s WHERE id = %s",
+                (data.email, claims["sub"]))
+    conn.commit()
+    cur.close()
+
+# https://crbl-studio.github.io/games/auth/api.html#post-to-userlogout
+@router.post("/user/logout")
+async def logout(authorization: str | None = Header(default=None), x_refresh_token: str | None = Header(default=None)):
+    cur = conn.cursor()
+    if authorization is not None:
+        claims = check_jwt(authorization)
+        cur.execute("INSERT INTO user_blacklist VALUES (%s, 'jwt', %s)", (authorization, claims["exp"]))
+    if x_refresh_token is not None:
+        refresh = check_refresh_token(authorization)
+        cur.execute("INSERT INTO user_blacklist VALUES (%s, 'refresh', %s)", (x_refresh_token, claims["exp"]))
+    conn.commit()
+    cur.close()
+
+# https://crbl-studio.github.io/games/auth/api.html#post-to-userrefresh
+@router.post("/user/refresh")
+async def refresh(x_refresh_token: str | None = Header(default=None)):
+    cur = conn.cursor()
+    if x_refresh_token is not None:
+        refresh = check_refresh_token(x_refresh_token)
+        if refresh is None or refresh["exp"] < int(time.time()):
+            raise HTTPException(status_code=401, detail="No refresh token was provided or the refresh token is invalid.")
+        return {"data": {"jwt": generate_jwt(refresh["sub"]), "refreshToken": generate_refresh_token(refresh["sub"])}}
+    else:
+        raise HTTPException(status_code=401, detail="No refresh token was provided or the refresh token is invalid.")

@@ -14,4 +14,4 @@
 __pycache__
 
 # Config private files
-auth/config.toml
+api/config.toml

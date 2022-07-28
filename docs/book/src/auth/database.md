@@ -22,7 +22,7 @@ Entries must be removed after the expiration date has been reached.
 | Name         | Type     | Unique | Not null | Description                                         | Relation        |
 |--------------|----------|--------|----------|-----------------------------------------------------|-----------------|
 | `token`      | `string` | yes    | yes      | The token to blacklist.                             |                 |
-| `type`       | `number` | no     | yes      | The type of token (0 for`refresh` and 1 for `jwt`). |                 |
+| `type`       | `enum`   | no     | yes      | The type of token (`refresh` or `jwt`).             |                 |
 | `expiration` | `date`   | no     | yes      | The date when the token expires.                    |                 |
 
 
